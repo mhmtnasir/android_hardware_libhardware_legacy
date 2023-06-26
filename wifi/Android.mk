@@ -48,4 +48,10 @@ ifeq ($(BOARD_HAVE_SAMSUNG_WIFI),true)
 LOCAL_CFLAGS += -DSAMSUNG_WIFI
 endif
 
+ifeq ($(BOARD_HAVE_MARVELL_WIFI),true)
+LOCAL_CFLAGS += -DMRVL_WIFI
+LOCAL_C_INCLUDES += hardware/marvell/wlan/mrvl/libMarvellWireless
+LOCAL_SHARED_LIBRARIES += libMarvellWireless
+endif
+
 LOCAL_SHARED_LIBRARIES += libnetutils
