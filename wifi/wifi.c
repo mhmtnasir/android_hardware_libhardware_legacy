@@ -80,7 +80,6 @@ static struct wpa_ctrl *monitor_conn;
 
 /* socket pair used to exit from a blocking read */
 static int exit_sockets[2];
-static int wifi_mode = 0;
 static int Dbg = 0;
 
 #ifdef MRVL_WIFI
@@ -92,7 +91,7 @@ static int Dbg = 0;
 #define FW_STATE_HUNG   1
 static int fw_state;
 #endif
-
+static int wifi_mode = 0;
 
 static char primary_iface[PROPERTY_VALUE_MAX];
 // TODO: use new ANDROID_SOCKET mechanism, once support for multiple
@@ -345,7 +344,6 @@ int wifi_unload_driver()
     return ret;
 }
 #else
-
 int wifi_load_driver()
 {
 #ifdef WIFI_DRIVER_MODULE_PATH
@@ -769,7 +767,6 @@ int wifi_start_supplicant(int p2p_supported)
     const prop_info *pi;
     unsigned serial = 0, i;
 #endif
-
 #ifdef MRVL_WIFI
     fw_state = FW_STATE_NORMAL;
     if (wifi_get_fwstate()) {
@@ -1075,7 +1072,7 @@ int wifi_send_command(const char *cmd, char *reply, size_t *reply_len)
         /* unblocks the monitor receive socket for termination */
         TEMP_FAILURE_RETRY(write(exit_sockets[0], "T", 1));
         return -2;
-    } else if (strncmp(reply, "FAIL", 4) == 0) {
+    } else if (ret < 0 || strncmp(reply, "FAIL", 4) == 0) {
         return -1;
     }
     if (strncmp(cmd, "PING", 4) == 0) {
